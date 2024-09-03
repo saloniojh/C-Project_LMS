@@ -1,1 +1,81 @@
 
+public class Book
+{
+    public string Title { get; set; }
+    public string Author { get; set; }
+    public string ISBN { get; set; }
+    public bool IsAvailable { get; set; }
+
+    public Book(string title, string author, string isbn)
+    {
+        Title = title;
+        Author = author;
+        ISBN = isbn;
+        IsAvailable = true;
+    }
+}
+
+public class Member
+{
+    public string Name { get; set; }
+    public string MemberID { get; set; }
+
+    public Member(string name, string memberId)
+    {
+        Name = name;
+        MemberID = memberId;
+    }
+}
+
+public class Library
+{
+    private List<Book> books = new List<Book>();
+    private List<Member> members = new List<Member>();
+
+    public void AddBook(string title, string author, string isbn)
+    {
+        books.Add(new Book(title, author, isbn));
+    }
+
+    public void AddMember(string name, string memberId)
+    {
+        members.Add(new Member(name, memberId));
+    }
+
+    public void LendBook(string isbn, string memberId)
+    {
+        var book = books.FirstOrDefault(b => b.ISBN == isbn && b.IsAvailable);
+        if (book != null)
+        {
+            book.IsAvailable = false;
+            Console.WriteLine($"{book.Title} has been lent to {memberId}");
+        }
+        else
+        {
+            Console.WriteLine("Book is not available or does not exist.");
+        }
+    }
+
+    public void ReturnBook(string isbn)
+    {
+        var book = books.FirstOrDefault(b => b.ISBN == isbn && !b.IsAvailable);
+        if (book != null)
+        {
+            book.IsAvailable = true;
+            Console.WriteLine($"{book.Title} has been returned.");
+        }
+        else
+        {
+            Console.WriteLine("Book was not borrowed or does not exist.");
+        }
+    }
+
+    public void DisplayBooks()
+    {
+        foreach (var book in books)
+        {
+            string status = book.IsAvailable ? "Available" : "Not Available";
+            Console.WriteLine($"{book.Title} by {book.Author} [{status}]");
+        }
+    }
+}
